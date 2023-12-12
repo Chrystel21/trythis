@@ -1,1 +1,36 @@
-  ddd
+// DeleteContact.jsx
+import React from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from '@mui/material';
+
+const DeleteContact = ({ contact, onDeleteContact, onClose, open }) => {
+  const handleDeleteContact = () => {
+    // Add any logic before deleting
+    onDeleteContact(contact.id); // Assuming you have a function to handle deletion
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Delete Contact</DialogTitle>
+      <DialogContent>
+        <p>Are you sure you want to delete {contact?.fullName || 'this contact'}?</p>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleDeleteContact} color="primary">
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default DeleteContact;
