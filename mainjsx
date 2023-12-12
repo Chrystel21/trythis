@@ -1,16 +1,55 @@
+// Main.jsx
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import ContactForm from './ContactForm';
 import ContactTable from './ContactTable';
 import UpdateContact from './UpdateContact';
-// import DeleteContact from './DeleteContact';
+import DeleteContact from './DeleteContact';
+import ViewContact from './ViewContact';
 
 const Main = () => {
   const [contacts, setContacts] = useState([]);
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openViewDialog, setOpenViewDialog] = useState(false);
 
   const handleAddContact = (newContact) => {
     setContacts((prevContacts) => [...prevContacts, newContact]);
+  };
+
+  const handleOpenUpdateDialog = (contactId) => {
+    const selectedContact = contacts.find((contact) => contact.id === contactId);
+    setSelectedContact(selectedContact);
+    setOpenUpdateDialog(true);
+  };
+
+  const handleCloseUpdateDialog = () => {
+    setOpenUpdateDialog(false);
+    setSelectedContact(null);
+  };
+
+  const handleOpenDeleteDialog = (contactId) => {
+    const selectedContact = contacts.find((contact) => contact.id === contactId);
+    setSelectedContact(selectedContact);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setSelectedContact(null);
+  };
+
+  const handleOpenViewDialog = (contactId) => {
+    const selectedContact = contacts.find((contact) => contact.id === contactId);
+    setSelectedContact(selectedContact);
+    setOpenViewDialog(true);
+  };
+
+  const handleCloseViewDialog = () => {
+    setOpenViewDialog(false);
+    setSelectedContact(null);
   };
 
   return (
@@ -18,21 +57,40 @@ const Main = () => {
       <div>
         <div className="table-container">
           <Switch>
-            {/* Route to display ContactTable */}
             <Route path="/" exact>
-              <ContactTable contacts={contacts} />
+              <ContactTable
+                contacts={contacts}
+                onOpenUpdateDialog={handleOpenUpdateDialog}
+                onOpenDeleteDialog={handleOpenDeleteDialog}
+                onOpenViewDialog={handleOpenViewDialog}
+              />
             </Route>
-
-            {/* Route to display ContactForm */}
             <Route path="/contactform" exact>
               <ContactForm onAddContact={handleAddContact} />
             </Route>
-
-            {/* Route to display UpdateContact */}
             <Route path="/updatecontact/:id" exact>
-              <UpdateContact contacts={contacts} />
+              <UpdateContact
+                contact={selectedContact}
+                onUpdateContact={(updatedContact) => handleUpdateContact(updatedContact)}
+                onClose={handleCloseUpdateDialog}
+                open={openUpdateDialog}
+              />
             </Route>
-
+            <Route path="/deletecontact/:id" exact>
+              <DeleteContact
+                contact={selectedContact}
+                onDeleteContact={(contactId) => handleDeleteContact(contactId)}
+                onClose={handleCloseDeleteDialog}
+                open={openDeleteDialog}
+              />
+            </Route>
+            <Route path="/viewcontact/:id" exact>
+              <ViewContact
+                contact={selectedContact}
+                onClose={handleCloseViewDialog}
+                open={openViewDialog}
+              />
+            </Route>
           </Switch>
         </div>
       </div>
