@@ -1,0 +1,70 @@
+import React, { useState } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from '@mui/material';
+
+const UpdateContact = ({ contact, onUpdateContact, onClose }) => {
+  const [updatedContact, setUpdatedContact] = useState(contact);
+
+  const handleInputChange = (name, value) => {
+    setUpdatedContact({
+      ...updatedContact,
+      [name]: value,
+    });
+  };
+
+  const handleUpdateContact = () => {
+    onUpdateContact(updatedContact);
+    onClose();
+  };
+
+  return (
+    <Dialog open={!!contact} onClose={onClose}>
+      <DialogTitle>Update Contact</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="Full Name"
+          value={updatedContact?.fullName}
+          onChange={(e) => handleInputChange('fullName', e.target.value)}
+        />
+        <TextField
+          label="Email Address"
+          value={updatedContact?.emailAddress}
+          onChange={(e) => handleInputChange('emailAddress', e.target.value)}
+        />
+        <TextField
+          label="Contact Number"
+          value={updatedContact?.contactNumber}
+          onChange={(e) => handleInputChange('contactNumber', e.target.value)}
+        />
+        <TextField
+          label="Location"
+          value={updatedContact?.location}
+          onChange={(e) => handleInputChange('location', e.target.value)}
+        />
+        <TextField
+          label="Registered Date"
+          type="date"
+          value={updatedContact?.registeredDate}
+          onChange={(e) => handleInputChange('registeredDate', e.target.value)}
+          InputLabelProps={{ shrink: true }}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleUpdateContact} color="primary">
+          Update
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default UpdateContact;
