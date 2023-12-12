@@ -11,10 +11,12 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  DialogContentText,
 } from '@mui/material';
 
 const UpdateContact = ({ contact, onUpdateContact, onClose, open }) => {
   const [updatedContact, setUpdatedContact] = useState({});
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   useEffect(() => {
     setUpdatedContact(contact);
@@ -27,8 +29,17 @@ const UpdateContact = ({ contact, onUpdateContact, onClose, open }) => {
     });
   };
 
+  const handleOpenConfirmDialog = () => {
+    setConfirmDialogOpen(true);
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setConfirmDialogOpen(false);
+  };
+
   const handleUpdateContact = () => {
     // Add validation or any other logic before updating
+    handleCloseConfirmDialog(); // Close the confirmation dialog
     onUpdateContact(updatedContact);
     onClose();
   };
@@ -38,11 +49,7 @@ const UpdateContact = ({ contact, onUpdateContact, onClose, open }) => {
       <DialogTitle>Update Contact</DialogTitle>
       <DialogContent>
         {/* Full Name */}
-        <TextField
-          label="Full Name"
-          value={updatedContact?.fullName || ''}
-          disabled
-        />
+        <TextField label="Full Name" value={updatedContact?.fullName || ''} disabled />
 
         {/* Email Address */}
         <TextField
@@ -78,12 +85,36 @@ const UpdateContact = ({ contact, onUpdateContact, onClose, open }) => {
           onChange={(e) => handleInputChange('registeredDate', e.target.value)}
           InputLabelProps={{ shrink: true }}
         />
+
+        {/* Confirmation Dialog */}
+        <Dialog open={confirmDialogOpen} onClose={handleCloseConfirmDialog}>
+          <DialogTitle>Confirm Update</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please confirm the update to the following:
+              <br />
+              Email Address: {updatedContact?.emailAddress}
+              <br />
+              Contact Number: {updatedContact?.contactNumber}
+              <br />
+              Location: {updatedContact?.location}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseConfirmDialog} color="primary">
+              No
+            </Button>
+            <Button onClick={handleUpdateContact} color="primary">
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleUpdateContact} color="primary">
+        <Button onClick={handleOpenConfirmDialog} color="primary">
           Update
         </Button>
       </DialogActions>
